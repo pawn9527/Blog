@@ -9,11 +9,12 @@ from aiohttp import web
 from config import configs
 import markdown2
 import logging
-
-logging.basicConfig(level=logging.INFO)
 import re
 import hashlib
 import json
+
+logging.basicConfig(level=logging.INFO)
+
 
 _COOKIE_KEY = configs.session.secret
 _COOKIE_NAME = 'awesession'
@@ -81,7 +82,6 @@ async def index(*, page="1"):
         'page': page,
         'blogs': blogs
     }
-
 
 
 @get('/register')
@@ -162,6 +162,7 @@ async def get_blog(id):
     }
 
 
+# 用户登录
 @post('/api/authenticate')
 async def authenticate(*, email, password):
     if not email:
@@ -184,6 +185,7 @@ async def authenticate(*, email, password):
     user.password = "******"
     r.content_type = "application/json"
     r.body = json.dumps(user, ensure_ascii=False).encode("utf-8")
+    print(f"{user.name}登录成功")
     return r
 
 
@@ -242,7 +244,7 @@ async def api_get_blog(*, id):
     return blog
 
 
-@post('/api/blog/{id}')
+@post('/api/blogs/{id}')
 async def api_update_blog(id, request, *, name, summary, content):
     check_admin(request)
     blog = await Blog.find(id)
@@ -262,7 +264,7 @@ async def api_update_blog(id, request, *, name, summary, content):
 @post('/api/blogs/{id}/delete')
 async def api_delete_blog(request, *, id):
     check_admin(request)
-    blog = Blog.find(id)
+    blog = await Blog.find(id)
     if not blog:
         raise APIResourceNotFoundError("Blog")
     await blog.remove()
@@ -344,7 +346,7 @@ def manage_create_blog():
     }
 
 
-@get('/manage/blog/edit')
+@get('/manage/blogs/edit')
 def mange_edit_blog(*, id):
     return {
         '__template__': 'manage_blog_edit.html',

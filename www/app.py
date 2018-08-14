@@ -58,7 +58,6 @@ async def auth_factory(app, handler):
     async def auth(request):
         logging.info("check user: %s %s" % (request.method, request.path))
         request.__user__ = None
-        logging.error("**" * 30)
         logging.error(request.cookies)
         cookie_str = request.cookies.get(_COOKIE_NAME)
         logging.error(f"cookie_str={cookie_str}")
@@ -93,6 +92,7 @@ async def data_factory(app, handler):
                 request.__data__ = await request.post()
                 logging.info('request from: %s' % (request.__data__))
         return await handler(request)
+
     return parse_data
 
 

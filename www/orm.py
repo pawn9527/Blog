@@ -87,12 +87,21 @@ class ModelMetaclass(type):
         attrs['__primary_key__'] = primaryKey  # 主键名称
         attrs["__fields__"] = fields  # 除主键外的属性名
         # 构建默认的 SELECT UPDATE DELETE 语句
-        attrs['__select__'] = "select `%s`, %s from `%s`" % (primaryKey, ','.join(escaped_fields), table_name)
-        attrs['__insert__'] = "insert into `%s` (%s, `%s` ) value (%s)" % (
+
+        attrs['__select__'] = 'select `%s`, %s from `%s`' % (primaryKey, ','.join(escaped_fields), table_name)
+
+        attrs['__insert__'] = 'insert into `%s` (%s, `%s` ) value (%s)' % (
             table_name, ','.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) + 1))
-        attrs['__update__'] = "update `%s` set `%s` where `%s` = ? " % (
+
+        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (
             table_name, ','.join(map(lambda x: '`%s` = ?' % (mappings.get(x).name or x), fields)), primaryKey)
-        attrs['__delete__'] = "delete from `%s` where '%s' = ?" % (table_name, primaryKey)
+
+        """
+               'update `%s` set %s where `%s`=?' % (
+        tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
+        """
+
+        attrs['__delete__'] = 'delete from `%s` where `%s` = ?' % (table_name, primaryKey)
         return type.__new__(cls, name, bases, attrs)
 
 

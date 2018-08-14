@@ -5,6 +5,7 @@
         var
             ID = '{{ id }}',
             action = '{{ action }}';
+
         function initVM(blog) {
             var vm = new Vue({
                 el: '#vm',
@@ -12,11 +13,13 @@
                 methods: {
                     submit: function (event) {
                         event.preventDefault();
+                        blog.content = editor.getMarkdown();
+                        console.log(blog);
                         var $form = $('#vm').find('form');
                         $form.postJSON(action, this.$data, function (err, r) {
-                            if (err){
+                            if (err) {
                                 $form.showFormError(err);
-                            }else{
+                            } else {
                                 return location.assign('/api/blogs/' + r.id);
                             }
                         });
@@ -25,18 +28,18 @@
             });
             $('vm').show();
         }
-        
-        
+
+
         $(function () {
-            if (ID){
-                getJSON('/api/blogs/'+ ID, function (err, blog) {
-                    if(err){
+            if (ID) {
+                getJSON('/api/blogs/' + ID, function (err, blog) {
+                    if (err) {
                         return fatal(err);
                     }
                     $('#loading').hide();
                     initVM(blog);
                 });
-            }else{
+            } else {
                 $('#loading').hide();
                 initVM({
                     name: '',
@@ -44,6 +47,26 @@
                     content: ''
                 });
             }
+        });
+
+        $(function () {
+            editor = editormd("editormd", {
+                theme: "default",
+                previewTheme: "default",
+                editorTheme: "base16-light",
+                codeFold: true,
+                //syncScrolling : false,
+                saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
+                searchReplace: true,
+                //watch : false,                // 关闭实时预览
+                htmlDecode: "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+                //toolbar  : false,             //关闭工具栏
+                //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
+                emoji: true,
+                taskList: true,
+                tocm: true,         // Using [TOCM]
+                path: "/static/editormd/lib/"
+            });
         });
     </script>
 {% endblock %}
@@ -58,7 +81,7 @@
         </div>
     </div>
     <div id="error" class="uk-width-1-1"></div>
-    <div id="loading"class="uk-width-1-1 uk-text-center">
+    <div id="loading" class="uk-width-1-1 uk-text-center">
         <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i>正在加载...</span>
     </div>
     <div id="vm" class="uk-width-2-3">
@@ -73,13 +96,15 @@
             <div class="uk-form-row">
                 <label class="uk-form-label">摘要:</label>
                 <div class="uk-form-controls">
-                    <textarea v-model="summary" name="name" type="text" placeholder="摘要" class="uk-width-1-1" style="resize: none;"></textarea>
+                    <textarea v-model="summary" name="name" type="text" placeholder="摘要" class="uk-width-1-1"
+                              style="resize: none;"></textarea>
                 </div>
             </div>
             <div class="uk-form-row">
                 <label class="uk-form-label">内容:</label>
-                <div class="uk-form-controls">
-                    <textarea v-model="content" name="name" type="text" placeholder="内容" class="uk-width-1-1" style="resize: none;"></textarea>
+                <div class="uk-form-controls" id="editormd">
+                    <textarea v-model="content" name="name" type="text" placeholder="内容" class="uk-width-1-1"
+                              style="resize: none;"></textarea>
                 </div>
             </div>
             <div class="uk-form-row">

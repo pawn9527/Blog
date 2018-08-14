@@ -11,11 +11,11 @@
             },
             methods: {
                 edit_blog: function (blog) {
-                    location.assign('/manage/blogs/eidt?id=' + blog.id)
+                    location.assign('/manage/blogs/edit?id=' + blog.id)
                 },
                 delete_blog: function (blog) {
                     if (confirm('确认要删除 "' + blog.name + '"? 删除后不可恢复! ')) {
-                        postJSON('/api/blogs' + blog.id + '/delete', function (err, r) {
+                        postJSON('/api/blogs/' + blog.id + '/delete', function (err, r) {
                             if (err) {
                                 return alert(err.message || err.error || err)
                             }

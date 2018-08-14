@@ -3,12 +3,20 @@
 		<meta charset="utf-8"/>
 		{% block mate %} {%endblock%}
 		<title>{% block title%} ? {% endblock %} -Awesome Python Webapp</title>
+
+        <link rel="stylesheet" href="/static/css/style.css"/>
+        <link rel="stylesheet" href="/static/css/editormd.min.css"/>
+
+        <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="/static/css/uikit.min.css"/>
+
 		<script src="/static/js/uikit.min.js"></script>
         <script src="/static/js/vue.min.js"></script>
         <script src="/static/js/jquery.min.js"></script>
         <script src="/static/js/sha1.min.js"></script>
         <script src="/static/js/awesome.js"></script>
+        <!--副文本编辑器-->
+        <script src="/static/js/editormd.js"></script>
 	 	{% block beforehead %}<!-- before head  -->{% endblock %}
 	</head>
 	<body>
